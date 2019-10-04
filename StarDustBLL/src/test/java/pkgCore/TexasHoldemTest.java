@@ -32,6 +32,9 @@ public class TexasHoldemTest {
 		
 		Rule rle = new Rule(eGame.TexasHoldEm);
 		GamePlay gp = new GamePlay(t, rle);
+		
+		
+		
 		gp.StartGame();
 
 		CardDraw cd1 = new CardDraw(eCardCount.Three, eCardDestination.COMMON, eCardVisibility.EVERYONE);

@@ -18,7 +18,7 @@ import pkgException.HandException;
 
 public class GamePlay { 
 
-	private Rule Rle;
+	private Rule rle;
 	private ArrayList<Player> GamePlayers = new ArrayList<Player>();
 	private HashMap<UUID, HandPoker> GameHand = new HashMap<UUID, HandPoker>();
 	private ArrayList<Card> CommonCards = new ArrayList<Card>();
@@ -28,6 +28,13 @@ public class GamePlay {
 	private LinkedList PlayerBetPosition;
 	private Deck GameDeck;
 
+	
+	private void PutGameHand(UUID PlayerID, HandPoker hp)
+	{
+		GameHand.put(PlayerID,  hp);
+	}
+	
+	
 	/**
 	 * GamePlay - Create an instance of GamePlay. For every player in the table, add
 	 * them to the game Set the GameDeck.
@@ -36,11 +43,11 @@ public class GamePlay {
 	 * @param rle
 	 */
 	public GamePlay(Table t, Rule rle) {
-		this.Rle = rle;
 		GamePlayers.addAll(t.getTablePlayers());
 		GameDeck = new Deck();
 	}
 
+	
 	public void Draw(Player p, CardDraw CD) throws DeckException, HandException {
 
 		for (int crdCnt = 0; crdCnt < CD.getCardCount().getCardCount(); crdCnt++) {
@@ -165,7 +172,7 @@ public class GamePlay {
 	 * @return
 	 */
 	public Rule getRle() {
-		return Rle;
+		return rle;
 	}
 
 	/**
@@ -224,9 +231,11 @@ public class GamePlay {
 		for (Player p : GamePlayers) {
 			HandPoker hp = new HandPoker(p, this);
 			GameHand.put(p.getPlayerID(), hp);
-			Draw(p, this.Rle.getCardDraw(eDrawCount.FIRST));
+			Draw(p, this.rle.getCardDraw(eDrawCount.FIRST));
 		}
 	}
+	
+	
 	
 	/**
 	 * @author BRG

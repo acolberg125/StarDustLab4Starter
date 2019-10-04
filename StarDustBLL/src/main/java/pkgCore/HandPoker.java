@@ -101,10 +101,12 @@ public class HandPoker extends Hand implements Comparable {
 		return (HandScorePoker) this.getHS();
 	}
 
+	/*
 	@Override
-	protected void setCards(ArrayList<Card> cards) {
+	private void setCards(ArrayList<Card> cards) {
 		super.setCards(cards);
 	}
+	*/
 
 
 	/**
