@@ -42,7 +42,7 @@ public class GamePlay {
 	 * @param t
 	 * @param rle
 	 */
-	public GamePlay(Table t, Rule rle) {
+	public GamePlay(Table t, Rule rle) { 
 		GamePlayers.addAll(t.getTablePlayers());
 		GameDeck = new Deck();
 	}
@@ -88,10 +88,17 @@ public class GamePlay {
 	 * getBestMadeHand - Return the best made hand for the player
 	 * @param player
 	 * @return
+	 * @throws HandException 
 	 */
-	public HandPoker getBestMadeHand(Player player) {
-		//FIXME: this should not return null, it should return back the best made hand in the hashmap
-		return null;
+	public HandPoker getBestMadeHand(Player player) throws HandException {
+		this.EvaluateGameHands();
+		Iterator<Map.Entry<UUID, HandPoker>> iter = GameHand.entrySet().iterator();
+		HandPoker max = iter.next().getValue();
+		while(iter.hasNext()) {
+			Map.Entry<UUID, HandPoker> entry = iter.next();
+			max = entry.getValue().compareTo(max) == 1 ? entry.getValue() : max;
+		}
+		return this.GameHand.get(player.getPlayerID()); 
 	}
 
 	/**
@@ -105,8 +112,7 @@ public class GamePlay {
 	 * @return
 	 */
 	public ArrayList<HandPoker> getBestPossibleHands(Player player) {
-		//FIXME: this should not return null, it should return an array of the best possible hands
-		return null;
+		return BestPossibleHands.get(player.getPlayerID());
 	}
 
 	/**
@@ -159,8 +165,7 @@ public class GamePlay {
 	 * @return
 	 */
 	public HandPoker GetPlayersHand(Player player) {
-		//FIXME: this should return back the Player's hand from the hashmap
-		return null;
+		return GameHand.get(player.getPlayerID());
 	}
 
 	/**
@@ -186,9 +191,12 @@ public class GamePlay {
 	 * @return
 	 */
 	public boolean isMadeHandBestPossibleHand(Player player) {
-		//FIXME: If the BestMadeHand is in the BestPossibleHands, return true.  The player has the NUTS!
-		return false;
-	}
+		HandPoker p = this.getBestMadeHand(player);
+			if(this.BestPossibleHands.get(player.getPlayerID()).contains(p))
+			      return true;
+			return false;
+		}
+	
 
 	/**
 	 * @author BRG
@@ -200,7 +208,7 @@ public class GamePlay {
 	 * @param HandPoker
 	 */
 	protected void SetBestMadeHand(UUID PlayerID, HandPoker HandPoker) {
-		//FIXME: Put the best made hand for a plyer in the map.
+		this.BestMadeHand.put(PlayerID, HandPoker);
 	}
 
 	/**
@@ -213,7 +221,7 @@ public class GamePlay {
 	 * @param BestHands
 	 */
 	protected void SetBestPossibleHands(UUID PlayerID, ArrayList<HandPoker> BestHands) {
-		//FIXME: Set the best possible hands in the map
+		this.BestPossibleHands.put(PlayerID, BestHands);
 	}
 	
 	/**
@@ -246,12 +254,22 @@ public class GamePlay {
 	 * hand.  Could be a tie...
 	 * @return
 	 */
-	public ArrayList<Player> GetGameWinners() {
+
+	public ArrayList<Player> GetGameWinners() throws HandException {
 		
-		//FIXME: Find all the bestmadehand from each of the players, return an ArrayList of Players that have the best hand.  Two players could tie (so two entries in the ArrayList		
 		ArrayList<Player> WinningPlayers = new ArrayList<Player>();
 		ArrayList<HandPoker> GameHands = new ArrayList<HandPoker>();
-		//FIXME: finish the implmentation
+		ArrayList<Player> GamePlayers = this.GamePlayers;
+		
+		for(Player p : GamePlayers) {
+			GameHands.addAll(this.getBestPossibleHands(p));
+		}
+		Collections.sort(GameHands);
+		
+		for(Player p : GamePlayers)
+			if(this.getBestMadeHand(p).compareTo(GameHands.get(GameHands.size() - 1)) == 0)
+			WinningPlayers.add(p);
+
 		return WinningPlayers;
 	}
 

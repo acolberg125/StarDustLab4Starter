@@ -121,18 +121,19 @@ public class HandPoker extends Hand implements Comparable {
 	 */
 	
 	public void SetBestHand(ArrayList<HandPoker> PossibleHands) {
-	
-		//FIXME: Set the best possible hands and the best made hand.
-		//FIXME: I'll give you one... BestMadeHand... checkout the linq command
 		
 		HandPoker BestMadeHand = PossibleHands.stream()
 				.filter(x -> x.getHandScorePoker().isNatural() == true).findAny()
 				.orElse(null);
 		
-		//TODO: the end result of this method was to run these two setters:
+		ArrayList<HandPoker> bh = new ArrayList<>();
+		for(HandPoker h: PossibleHands) {
+			if(BestMadeHand.compareTo(h) == 0)
+				bh.add(h);
+		}
 		
-		//this.getGP().SetBestPossibleHands		
-		//this.getGP().SetBestMadeHand
+		this.getGP().SetBestPossibleHands(this.getPlayer().getPlayerID(),bh);		
+		this.getGP().SetBestMadeHand(this.getPlayer().getPlayerID(), BestMadeHand)
 	}
 
 	public ArrayList<HandPoker> GetPossibleHands() throws HandException {
